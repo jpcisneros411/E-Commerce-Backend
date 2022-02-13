@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const { Tag, Product, ProductTag, Tag } = require('../../models');
-
+const { Tag, Product, ProductTag} = require('../../models');
+//tag was in above const twice, removed the second one after producttag
 // The `/api/tags` endpoint
 
 router.get('/', (req, res) => {
@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
     try {
       const Tags = Tags.findAll({
       // be sure to include its associated Product data
-      include: [{ model: Product }]
+      include: [{ model: Product, through: ProductTag }]
       });
       res.status(200).json(Tags);
     } 
@@ -22,7 +22,7 @@ router.get('/:id', (req, res) => {
   try{
   // be sure to include its associated Product data
     const Tag = Tag.findByPk(req.params.id, {
-      include: [{ model: Product }]
+      include: [{ model: Product, through: ProductTag }]
     });
 
     if (!Tag) {
@@ -37,7 +37,7 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   // create a new tag
   try {
-    const Tag = await Tag.create({
+    const Tag = Tag.create({
       tag_id: req.body.tag_id,
     });
     res.status(200).json(locationData);
